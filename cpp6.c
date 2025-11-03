@@ -26,7 +26,6 @@ SOFTWARE.
 
 INLINE FILE_LOCAL void outadefine(struct Global *, DEFBUF *);
 INLINE FILE_LOCAL void domsg(struct Global *, ErrorCode, va_list);
-FILE_LOCAL char *incmem(struct Global *, char *, int);
 
 /*
  * skipnl()     skips over input text to the end of the line.
@@ -251,9 +250,9 @@ int catenate(struct Global *global, ReturnCode *ret)
       break;
     default:                            /* An error, ...        */
       if (isprint(c))
-        cerror(global, ERROR_STRANG_CHARACTER, c);
+        cerror(global, ERROR_STRANGE_CHARACTER, c);
       else
-        cerror(global, ERROR_STRANG_CHARACTER2, c);
+        cerror(global, ERROR_STRANGE_CHARACTER2, c);
       strcpy(global->work, token1);
       unget(global);
       break;
@@ -482,6 +481,7 @@ char *savestring(struct Global *global, char *text)
    */
 
   char *result;
+  (void)global;
   result = malloc(strlen(text) + 1);
   strcpy(result, text);
   return (result);

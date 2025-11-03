@@ -41,10 +41,10 @@ ReturnCode openfile(struct Global *global, char *filename)
     ret=addfile(global, fp, filename);
 
   if(!ret && global->showincluded) {
-          /* no error occured! */
-          Error(global, "cpp: included \"");
-          Error(global, filename);
-          Error(global, "\"\n");
+    /* no error occurred! */
+    Error(global, "cpp: included \"");
+    Error(global, filename);
+    Error(global, "\"\n");
   }
   return(ret);
 }
@@ -107,7 +107,7 @@ int dooptions(struct Global *global, struct fppTag *tags)
       global->warnnoinclude = tags->data?1:0;
       break;
     case FPPTAG_WARN_NESTED_COMMENTS:
-      global->warnnestcomments =  tags->data?1:0;
+      global->warnnestcomments = tags->data?1:0;
       break;
     case FPPTAG_OUTPUTSPACE:
       global->showspace = tags->data?1:0;
@@ -161,20 +161,20 @@ int dooptions(struct Global *global, struct fppTag *tags)
       break;
     case FPPTAG_INCLUDE_DIR:
       if (global->incend >= &global->incdir[NINCLUDE]) {
-          cfatal(global, FATAL_TOO_MANY_INCLUDE_DIRS);
-          return(FPP_TOO_MANY_INCLUDE_DIRS);
+        cfatal(global, FATAL_TOO_MANY_INCLUDE_DIRS);
+        return(FPP_TOO_MANY_INCLUDE_DIRS);
       }
       *global->incend++ = (char *)tags->data;
       break;
     case FPPTAG_INCLUDE_FILE:
     case FPPTAG_INCLUDE_MACRO_FILE:
       if (global->included >= NINCLUDE) {
-          cfatal(global, FATAL_TOO_MANY_INCLUDE_FILES);
-          return(FPP_TOO_MANY_INCLUDE_FILES);
+        cfatal(global, FATAL_TOO_MANY_INCLUDE_FILES);
+        return(FPP_TOO_MANY_INCLUDE_FILES);
       }
-      global->include[global->included] = (char *)tags->data;
+      global->include[(int)global->included] = (char *)tags->data;
 
-      global->includeshow[global->included] =
+      global->includeshow[(int)global->included] =
           (tags->tag == FPPTAG_INCLUDE_FILE);
 
       global->included++;
@@ -275,7 +275,7 @@ ReturnCode initdefines(struct Global *global)
    *    #define __FILE__ ??             (dynamic, evaluated by magic)
    * Called only on cpp startup.
    *
-   * Note: the built-in static definitions are supressed by the -N option.
+   * Note: the built-in static definitions are suppressed by the -N option.
    * __LINE__, __FILE__, __TIME__ and __DATE__ are always present.
    */
 
@@ -290,11 +290,11 @@ ReturnCode initdefines(struct Global *global)
   static char months[12][4] = {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    };
+  };
 
   /*
    * Predefine the built-in symbols.  Allow the
-   * implementor to pre-define a symbol as "" to
+   * implementer to pre-define a symbol as "" to
    * eliminate it.
    */
   if (!(global->nflag & NFLAG_BUILTIN)) {
@@ -326,7 +326,7 @@ ReturnCode initdefines(struct Global *global)
      * Define __DATE__ as today's date.
      */
     dp = defendel(global, "__DATE__", FALSE);
-    tp = malloc(14);
+    tp = malloc(30);
     if(!tp || !dp)
       return(FPP_OUT_OF_MEMORY);
     dp->repl = tp;
@@ -342,7 +342,7 @@ ReturnCode initdefines(struct Global *global)
      * Define __TIME__ as this moment's time.
      */
     dp = defendel(global, "__TIME__", FALSE);
-    tp = malloc(11);
+    tp = malloc(30);
     if(!tp || !dp)
       return(FPP_OUT_OF_MEMORY);
     dp->repl = tp;
@@ -392,4 +392,3 @@ void deldefines(struct Global *global)
 #endif
   return;
 }
-

@@ -222,7 +222,7 @@ ReturnCode control( struct Global *global,
              */
             global->line = atoi(global->work) - 1;     /* Reset line number    */
 
-            for( tp = global->work; isdigit(*tp) || type[*tp] == SPA; tp++)
+            for( tp = global->work; isdigit(*tp) || type[(int)*tp] == SPA; tp++)
                 ;             /* Skip over digits */
 
             if( *tp != EOS )
@@ -465,8 +465,8 @@ ReturnCode doif(struct Global *global, int hash)
      * while #if needs a subroutine of its own to evaluate the expression.
      *
      * doif() is called only if compiling is TRUE.  If false, compilation
-     * is always supressed, so we don't need to evaluate anything.  This
-     * supresses unnecessary warnings.
+     * is always suppressed, so we don't need to evaluate anything.  This
+     * suppresses unnecessary warnings.
      */
 
     int c;
@@ -628,7 +628,6 @@ ReturnCode openinclude( struct Global *global,
     char **incptr;
     char tmpname[NWORK]; /* Filename work area    */
     int len;
-    ReturnCode ret;
 
     #if HOST == SYS_AMIGADOS
     if( strchr (filename, ':') != NULL )
@@ -665,7 +664,7 @@ ReturnCode openinclude( struct Global *global,
 
     /*
      * Look in any directories specified by -I command line
-     * arguments, then in the builtin search list.
+     * arguments, then in the built-in search list.
      */
     for( incptr = global->incdir; incptr < global->incend; incptr++ )
         {
@@ -681,7 +680,7 @@ ReturnCode openinclude( struct Global *global,
             {
             #if HOST == SYS_AMIGADOS
             if( (*incptr)[len-1] != '/' && (*incptr)[len-1] != ':' )
-	            sprintf( tmpname, "%s/%s", *incptr, filename );
+                sprintf( tmpname, "%s/%s", *incptr, filename );
             #else
             if( (*incptr)[len-1] != '/' )
                 sprintf( tmpname, "%s/%s", *incptr, filename );
@@ -690,12 +689,12 @@ ReturnCode openinclude( struct Global *global,
                 sprintf( tmpname, "%s%s", *incptr, filename );
 
             #if HOST == SYS_AMIGADOS
-            //
-            //  amp July 9, 1997
-            //
-            //  OK, hack in multiassign support for the buitin
-            //  search directories...
-            //
+            /*
+             * amp July 9, 1997
+             *
+             * OK, hack in multiassign support for the built-in
+             * search directories...
+             */
             if( (*incptr)[len-1] == ':' )
                 {
                 if( ! MultiAssignLoad( global, *incptr, filename, tmpname ) )
@@ -748,15 +747,15 @@ int hasdirectory( char *source,   /* Directory to examine         */
 }
 
 #ifdef _AMIGA
-//
-//  amp July 9, 1997
-//
-//  Use the OS Luke...
-//
-//  We do the sneaky version and let the OS do all
-//  the hard work so we don't have to mess around
-//  a lot ;)
-//
+/*
+ * amp July 9, 1997
+ *
+ * Use the OS Luke...
+ *
+ * We do the sneaky version and let the OS do all
+ * the hard work so we don't have to mess around
+ * a lot ;)
+ */
 ReturnCode MultiAssignLoad( struct Global *global, char *incptr, char *filename, char *tmpname )
 
 { /* MultiAssignLoad */
@@ -769,25 +768,25 @@ ReturnCode MultiAssignLoad( struct Global *global, char *incptr, char *filename,
 
     do
         {
-        //
-        //  This should not bring up a requester.
-        //  check to see if cpp does in fact tweek
-        //  the process WindowPtr.
-        //
+        /*
+         * This should not bring up a requester.
+         * check to see if cpp does in fact tweak
+         * the process WindowPtr.
+         */
         DevProc = GetDeviceProc( incptr, DevProc );
 
         if( DevProc )
             {
             SetFileSysTask( DevProc->dvp_Port );
 
-            //
-            //  Normally we would pass the lock and filename
-            //  to the Load() routine, which would CD to the
-            //  directory and Open(filename), but in order to
-            //  satisfy the exisiting openfile() function, we
-            //  bite the bullet and build the complete pathspec
-            //  rather than add the standard Load() routine.
-            //
+            /*
+             * Normally we would pass the lock and filename
+             * to the Load() routine, which would CD to the
+             * directory and Open(filename), but in order to
+             * satisfy the existing openfile() function, we
+             * bite the bullet and build the complete pathspec
+             * rather than add the standard Load() routine.
+             */
             if( NameFromLock( DevProc->dvp_Lock, tmpname, NWORK ) )
                 {
                 AddPart( tmpname, filename, NWORK );
@@ -812,4 +811,4 @@ ReturnCode MultiAssignLoad( struct Global *global, char *incptr, char *filename,
     return RtnCode;
 
 } /* MultiAssignLoad */
-#endif  //_AMIGA
+#endif  /* _AMIGA */
